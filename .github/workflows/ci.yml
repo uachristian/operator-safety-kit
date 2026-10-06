@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 1
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Compile
+        run: python -m compileall -q tools guards edit-safety ops-monitoring tests
+      - name: Shell syntax
+        run: |
+          for f in $(git ls-files '*.sh') hooks/pre-push.sample; do bash -n "$f"; done
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Self-scan with the kit's own public gate (generic patterns)
+        run: python tools/public_gate.py .
