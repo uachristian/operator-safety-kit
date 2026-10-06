@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
+      - name: Self-scan with the kit's own public gate (generic patterns)
+        run: python tools/public_gate.py .
       - name: Compile
         run: python -m compileall -q tools guards edit-safety ops-monitoring tests
       - name: Shell syntax
@@ -29,5 +31,3 @@ jobs:
           for f in $(git ls-files '*.sh') hooks/pre-push.sample; do bash -n "$f"; done
       - name: Unit tests
         run: python -m unittest discover -s tests -v
-      - name: Self-scan with the kit's own public gate (generic patterns)
-        run: python tools/public_gate.py .
