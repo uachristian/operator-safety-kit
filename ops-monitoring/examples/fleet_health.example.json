@@ -1,0 +1,9 @@
+{
+  "noise_patterns": [
+    "known transient upstream timeout",
+    "reconnecting to message broker"
+  ],
+  "skip_logs": {
+    "ops": ["logs/watchdog-self.log"]
+  }
+}

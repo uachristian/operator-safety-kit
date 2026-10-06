@@ -1,0 +1,6 @@
+# Domains an agent may link to in outbound messages (one per line).
+# A listed domain also allows its subdomains (docs.example.com via example.com).
+# Copy to domain_allowlist.txt and replace with your own vendors/sites.
+example.com
+example.org
+example.net

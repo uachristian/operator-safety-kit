@@ -1,0 +1,17 @@
+# Example denylist for public_gate.py and privacy_gate.py.
+# Keep your REAL denylist OUTSIDE every repository you scan (for example
+# $HERMES_HOME/state/public-repos/denylist.txt) and never commit or quote it.
+#
+# One entry per line, '#' comments. Plain terms match case-insensitively as
+# whole words; spaces also match '_' and '-'.
+# privacy_gate.py additionally accepts 're:<regex>' lines for ID shapes.
+# (public_gate.py treats every line as a plain term.)
+#
+# Owner / people names
+jane q placeholder
+# Business / brand names
+acme widgets fictional
+# Host aliases
+build-box-fake
+# Chat / user IDs (privacy_gate only)
+re:\bZZ000FAKE000\b

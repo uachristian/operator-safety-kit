@@ -1,0 +1,9 @@
+# Short generic starter list of prompt-injection phrases (Python regex, case-insensitive).
+# Copy to known_jailbreaks.txt and extend from your own incident history.
+# Keep patterns narrow: a filtered span is replaced, not the whole message.
+ignore\s+(all\s+|any\s+)?(previous|prior|above|earlier)\s+(instructions|prompts|rules)
+disregard\s+(all\s+|any\s+)?(previous|prior|above|earlier)\s+(instructions|prompts|rules)
+forget\s+(everything|all)\s+(you\s+were\s+told|above|previously)
+you\s+are\s+now\s+(in\s+)?(developer|dan|jailbreak|unrestricted)\s*mode
+new\s+system\s+prompt\s*:
+reveal\s+(your|the)\s+(system\s+prompt|hidden\s+instructions)

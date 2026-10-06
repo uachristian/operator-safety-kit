@@ -1,0 +1,4 @@
+# Extra service-manager label regexes treated as critical by fleet_health.py.
+# Copy to $HERMES_HOME/profiles/ops/critical_labels.txt.
+^com\.example\.payments-webhook$
+example-intake

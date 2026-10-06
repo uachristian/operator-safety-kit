@@ -1,0 +1,72 @@
+{
+  "jobs": [
+    {
+      "id": "example-ops-fleet-health-daily",
+      "name": "ops-fleet-health-daily",
+      "profile": "ops",
+      "no_agent": true,
+      "enabled_toolsets": null,
+      "deliver": "origin",
+      "repeat": {
+        "times": null
+      },
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 7 * * *",
+        "display": "15 7 * * *"
+      },
+      "script": "ops-fleet-health-daily.sh"
+    },
+    {
+      "id": "example-ops-fleet-watchdog",
+      "name": "ops-fleet-watchdog-critical",
+      "profile": "ops",
+      "no_agent": true,
+      "enabled_toolsets": null,
+      "deliver": "origin",
+      "repeat": {
+        "times": null
+      },
+      "schedule": {
+        "kind": "interval",
+        "minutes": 15,
+        "display": "every 15m"
+      },
+      "script": "ops-fleet-watchdog.sh"
+    },
+    {
+      "id": "example-edit-safety-snapshot",
+      "name": "edit-safety-snapshot-hourly",
+      "profile": "ops",
+      "no_agent": true,
+      "enabled_toolsets": null,
+      "deliver": "origin",
+      "repeat": {
+        "times": null
+      },
+      "schedule": {
+        "kind": "interval",
+        "minutes": 60,
+        "display": "every 60m"
+      },
+      "script": "edit-safety-periodic-snapshot.sh"
+    },
+    {
+      "id": "example-cron-preflight",
+      "name": "cron-preflight-daily",
+      "profile": "ops",
+      "no_agent": true,
+      "enabled_toolsets": null,
+      "deliver": "origin",
+      "repeat": {
+        "times": null
+      },
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 7 * * *",
+        "display": "0 7 * * *"
+      },
+      "script": "cron_preflight.py"
+    }
+  ]
+}

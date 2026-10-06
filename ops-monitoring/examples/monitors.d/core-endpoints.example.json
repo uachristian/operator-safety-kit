@@ -1,0 +1,31 @@
+{
+  "monitors": [
+    {
+      "name": "local-dashboard-status",
+      "type": "url",
+      "url": "http://127.0.0.1:8080/api/status",
+      "critical": true,
+      "timeout": 5,
+      "attempts": 5,
+      "retry_delay": 3,
+      "notes": "Local dashboard status endpoint. Retries absorb service-restart grace periods."
+    },
+    {
+      "name": "example-webhook-receiver",
+      "type": "tcp",
+      "host": "127.0.0.1",
+      "port": 9000,
+      "critical": false,
+      "timeout": 3,
+      "notes": "Local webhook receiver TCP check."
+    },
+    {
+      "name": "public-site",
+      "type": "url",
+      "url": "https://www.example.com/",
+      "critical": false,
+      "timeout": 10,
+      "attempts": 2
+    }
+  ]
+}

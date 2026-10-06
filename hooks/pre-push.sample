@@ -1,0 +1,67 @@
+#!/bin/bash
+# Git pre-push hook: block the push unless the public-release gate passes.
+#
+# Install:  cp hooks/pre-push.sample .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+# Config (env, optional):
+#   SAFETY_KIT_DIR      directory containing tools/public_gate.py (default: repo root)
+#   PUBLIC_GATE_DENYLIST  denylist file kept OUTSIDE the repo
+#                       (default: $HERMES_HOME/state/public-repos/denylist.txt if present)
+#   PUBLIC_GATE_ENV_GLOBS space-separated env-file globs whose values must never appear
+#                       (default: "$HERMES_HOME/.env $HERMES_HOME/profiles/*/.env")
+#   SAFETY_KIT_ALLOW_NO_DENYLIST=1  explicit opt-out: allow the push with generic
+#                       patterns only when no denylist exists. Without it, a missing
+#                       denylist or a missing privacy_gate.py BLOCKS the push.
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+KIT="${SAFETY_KIT_DIR:-$ROOT}"
+GATE="$KIT/tools/public_gate.py"
+PRIV="$KIT/tools/privacy_gate.py"
+
+if [ ! -f "$GATE" ]; then
+  echo "pre-push: BLOCKED public_gate.py not found at $GATE (set SAFETY_KIT_DIR)" >&2
+  exit 1
+fi
+if [ ! -f "$PRIV" ]; then
+  echo "pre-push: BLOCKED privacy_gate.py not found at $PRIV (set SAFETY_KIT_DIR)" >&2
+  exit 1
+fi
+
+args=("$ROOT")
+DENY="${PUBLIC_GATE_DENYLIST:-$HERMES_HOME/state/public-repos/denylist.txt}"
+HAVE_DENY=0
+if [ -f "$DENY" ]; then
+  HAVE_DENY=1
+  args+=(--denylist "$DENY")
+elif [ "${SAFETY_KIT_ALLOW_NO_DENYLIST:-}" = "1" ]; then
+  echo "pre-push: WARNING no denylist found; SAFETY_KIT_ALLOW_NO_DENYLIST=1 so generic patterns only" >&2
+else
+  echo "pre-push: BLOCKED no denylist at $DENY (set PUBLIC_GATE_DENYLIST, or SAFETY_KIT_ALLOW_NO_DENYLIST=1 to opt out)" >&2
+  exit 1
+fi
+for g in ${PUBLIC_GATE_ENV_GLOBS:-"$HERMES_HOME/.env" "$HERMES_HOME/profiles/*/.env"}; do
+  args+=(--env-glob "$g")
+done
+
+echo "pre-push: running public gate"
+python3 "$GATE" "${args[@]}"
+
+# Also scan the commits being pushed (messages, identities, added lines).
+zero=0000000000000000000000000000000000000000
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  if [ "$remote_sha" = "$zero" ]; then
+    revs=$(git rev-list "$local_sha" --not --remotes)
+  else
+    revs=$(git rev-list "$remote_sha..$local_sha")
+  fi
+  [ -z "$revs" ] && continue
+  pargs=()
+  if [ "$HAVE_DENY" = "1" ]; then pargs+=(--denylist "$DENY"); fi
+  for g in ${PUBLIC_GATE_ENV_GLOBS:-"$HERMES_HOME/.env" "$HERMES_HOME/profiles/*/.env"}; do
+    pargs+=(--env-glob "$g")
+  done
+  # shellcheck disable=SC2086
+  python3 "$PRIV" --repo "$ROOT" "${pargs[@]}" $revs
+done

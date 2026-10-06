@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.log
+*.jsonl
+state/
+logs/
+reports/
+# real (non-sample) local config
+tools/denylist.txt
+guards/domain_allowlist.txt
+guards/known_jailbreaks.txt
+.DS_Store

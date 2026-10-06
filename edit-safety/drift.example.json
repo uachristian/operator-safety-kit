@@ -1,0 +1,11 @@
+{
+  "mappings": [
+    {
+      "name": "agent-skills",
+      "repo": "~/src/my-agent-skills",
+      "repo_prefix": "skills",
+      "live_root": "~/.hermes/skills/custom",
+      "detect_extras": true
+    }
+  ]
+}
